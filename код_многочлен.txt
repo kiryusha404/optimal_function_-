@@ -1,0 +1,82 @@
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+using namespace std;
+
+int main()
+{
+    srand(time(NULL));
+    int step_m, arg_x; // перменные
+    
+    cout<<"Введитите степень многочлена: ";
+    cin>>step_m;
+    int *coff_a = new int [step_m]; //вводим рандомно кофиценты
+    for(int i = 0; i <= step_m; i++){
+        int rever = 1;
+        if(rand() % 2 == 0){
+            rever = -1;
+        }
+        coff_a[i] = (rand() % 100) * rever;
+    }
+    
+    cout<<endl;
+    cout<<"Введитите значение аргумента: ";
+    cin>>arg_x;
+    
+    cout<<endl;//вывод получившего многочлена
+    int stepen = step_m;
+    for(int i = 0; i < step_m; i++){
+        cout<<coff_a[i]<<"x^"<<stepen;
+        if(coff_a[i+1] < 0){
+            cout << " ";
+        }
+        else{
+            cout << " + ";
+        }
+        stepen--;
+    }
+    cout<<coff_a[step_m]<<endl;
+    
+    cout<<endl;
+    clock_t start = clock(); //явное вычисление
+        stepen = step_m;
+        int sum4 = 0;
+        for(int i = 0; i < step_m+1; i++){
+            sum4 += coff_a[i] * pow(arg_x, stepen);
+            stepen--;
+        }
+        cout<<sum4;
+    clock_t end = clock();
+    double seconds1 = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("   The time: %f seconds\n", seconds1);
+    
+    cout<<endl;
+    stepen = 0;
+        clock_t start1 = clock(); //метод накопления степени
+                int sum = coff_a[step_m];
+        int numb = arg_x;
+        for(int i = step_m - 1; i >= 0; i--){
+            sum += coff_a[i] * numb;
+            numb *= arg_x;
+        }
+        cout << sum;
+    clock_t end1 = clock();
+    double seconds2 = (double)(end1 - start1) / CLOCKS_PER_SEC;
+    printf("   The time: %f seconds\n", seconds2);
+    
+    cout<<endl;
+    
+        clock_t start2 = clock(); //схема Горнера
+        int sum1 = 0;
+        int dop = coff_a[0] * arg_x + coff_a[1];
+        for(int i = 2; i < step_m+1; i++){
+            dop = dop * arg_x + coff_a[i];
+
+        }
+        cout <<  dop;
+    clock_t end2 = clock();
+    double seconds3 = (double)(end2 - start2) / CLOCKS_PER_SEC;
+    printf("   The time: %f seconds\n", seconds3);
+    return 0;
+}
